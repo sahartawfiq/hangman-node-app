@@ -4,12 +4,12 @@ function Letter(underlyingLetter, userGuess){
 	this.userGuess = userGuess,
 	
 	this.display = function(){
-		if (this.isCorrect()) {
-			// console.log('underlying letter: ' + this.underlyingLetter);
-			return this.underlyingLetter;
+		if (userGuess === underlyingLetter) {
+			
+			return " " + this.underlyingLetter + " ";
 		}else{
-			// console.log("_");
-			return "_";
+			
+			return " _ ";
 		}
 	},
 	this.isCorrect = function(userGuess){
@@ -24,4 +24,4 @@ function Letter(underlyingLetter, userGuess){
 
 // console.log(a.isCorrect());
 // a.display();
-// module.exports = Letter;
+module.exports = Letter;

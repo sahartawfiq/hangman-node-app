@@ -1,8 +1,7 @@
 var inquirer = require("inquirer");
 var request = require("request");
 var Word = require("./Word.js");
-var Letter = require("./Letter.js");
-
+process.on('unhandledRejection', up => { console.log(up);});
 var wordsArray = ["archery", "badminton", "basketball", "boxing", "beach volleyball", "cycling",
 "diving", "fencing", "gymnastics", "handball", "karate", "rowing", "sailing", "soccer", "surfing",
 "swimming", "synchronized swimming", "track and field", "weightlifting", "wrestling"];
@@ -21,13 +20,13 @@ var remainingGuesses = 10;
 selectedWord = wordsArray[Math.floor(Math.random() * wordsArray.length)];
 lettersInWord = selectedWord.split("");
 wLength = lettersInWord.length;
-console.log(selectedWord);
-console.log(lettersInWord);
-console.log(wLength);
 
-var underlyingWord = new Word(lettersInWord, wLength, indexArray, userGuess);
-console.log(underlyingWord);
+
+var underlyingWord = new Word(selectedWord, wLength, userGuess);
+play();
+
 function enterALetter(){
+
 inquirer.prompt([
     {
       	type: "input",
@@ -44,27 +43,49 @@ inquirer.prompt([
     }
  ]).then(function(answers){
  	userGuess = answers.name;
- 	for (var i = 0; i < wLength; i++) {
- 		if (underlyingWord.indexArray[i]) {
- 			console.log(underlyingWord.check(answers.name));
-      	  	console.log("Correct Guess!");
-      	  	underlyingWord.letterDisplay();
- 		}else{
- 			remainingGuesses--;
-      	  	console.log("wrong Guess, you have" + "  " + remainingGuesses +  " " +"guesses left");
- 		} 
- 	}      	  	
-      	  
- });
-}
-enterALetter();
+ 	
+ 		if (userGuess) {
+ 			if (underlyingWord.displayWord(userGuess)) {
+        console.log("\n" +"-------------------------" + "\n")
+        console.log("Good Guess!!!");
+        console.log("\n" +"-------------------------" + "\n")
+      }else{
+        console.log("\n" +"-------------------------" + "\n")
+        console.log("Incorrect Guess :(");
+        console.log("You have " + remainingGuesses + "  gusses left");
+        console.log("\n" +"-------------------------" + "\n")
+        remainingGuesses--;
+        if (remainingGuesses === 0) {
+          console.log("\n" +"-------------------------" + "\n")
+          console.log("Game Over!!!!");
+          console.log("\n" +"-------------------------" + "\n")
+          return;
+        }
+      }
+ 			
+      console.log(underlyingWord.displayLetters());
+      enterALetter();
+ 		}     
+ 	})      	  	      	  
+};
 
-//
+
+function play(){
+    inquirer.prompt([
+        {
+        type: "confirm",
+        name: "start",
+        message: "Do you want to play?"},
+        ]).then(function(data){
+            if (data.start){
+              console.log(underlyingWord.displayLetters());
+              underlyingWord.letterArray();
+              enterALetter();           
+            } else {
+                console.log("Bye!")
+                return;
+            }
+        })
+};
 
 
- 
-// prompt.get(["Guess a Letter"], function (err, result) {
-    
-//     console.log('  username: ' + result.username);
-//     console.log('  email: ' + result.email);
-//   });
